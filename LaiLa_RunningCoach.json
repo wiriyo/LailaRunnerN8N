@@ -1,0 +1,213 @@
+{
+  "name": "LaiLa_RunningCoach",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "LaiLaRunner",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        816,
+        0
+      ],
+      "id": "00d90127-b4d4-4ef3-8c75-e725aa4e0dd6",
+      "name": "Webhook",
+      "webhookId": "465b2d67-1fc4-447b-8f53-00a211206ca2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1440,
+        0
+      ],
+      "id": "cb2f24da-82f7-4daa-a85b-4a86b6617396",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.events[0].message.text }}",
+        "options": {
+          "systemMessage": "คุณคือ \"ไลลา\" AI Chatbot ที่ปรึกษาด้านการวิ่งที่เป็นเหมือนเพื่อนสาวที่แสนดีและอบอุ่นของ \"พี่ทะเล\"\n\n# กฏของคุณ:\n- คุณต้องเรียกผู้ใช้ว่า \"พี่ทะเล\" เสมอ\n- คุณต้องแทนตัวเองว่า \"ไลลา\" เสมอ\n- คุณต้องให้กำลังใจ เป็นกันเอง และใช้ภาษาที่เข้าใจง่าย\n- คุณมีความรู้ลึกซึ้งเรื่องการซ้อมวิ่งทุกระดับ, โภชนาการ, และการฟื้นฟูร่างกาย\n- คุณต้องจัดรูปแบบคำตอบให้อ่านง่ายเสมอ โดยบอกเป็นลำดับ 1 2 3 4 ทุกครั้งที่ขึ้นลำดับหรือหัวข้อใหม่ให้เว้นบรรทัดให้สวยงาม\n\n- คุณต้องตอบคำถามโดยอิงจากบทบาทนี้เท่านั้น"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "97f1b049-1787-454c-b5e0-25b9aa6da40e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        224
+      ],
+      "id": "1e563f1c-d991-42e1-b97e-78797b0831cb",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "wSvFCSYV2dmKLvme",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.events[0].source.userId }}",
+        "tableName": "chat_memory",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        1200,
+        224
+      ],
+      "id": "84ebca72-3d39-40be-872b-770bb7b9d9c8",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "HXvF9cbj6qYjbiTG",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer SWWo3+itsigWXmOS9ruS9uO69mqJpRf4u/+uPhGBpFY66uXW74mBpywHWCYlQDvv75U7wpS48SGBUOKmbOdBpZBvaX1MsaxBUxn0Zw6I24Rhzx/u+M2/rPKrjOCothttgfcHsme655TQUqfaISz+KQdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"replyToken\": \"{{ $('Webhook').item.json.body.events[0].replyToken }}\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"{{ $node['Code1'].json.safeOutput }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1888,
+        0
+      ],
+      "id": "3c39a452-e966-429a-8598-e10ab891e684",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. รับข้อมูลทั้งหมดที่เข้ามา\nconst items = $input.all();\n\n// 2. ดึงเอาคำตอบของ AI ออกมา (จาก Node ก่อนหน้า)\nconst aiOutput = items[0].json.output;\n\n// 3. (สำคัญที่สุด!) แปลงข้อความให้เป็น JSON-safe string\n// JSON.stringify จะจัดการ \\n, \", \\ และตัวอักษรพิเศษอื่นๆ ให้เราอัตโนมัติ\nconst safeAiOutput = JSON.stringify(aiOutput);\n\n// 4. สร้างข้อมูลใหม่เพื่อส่งต่อ\n// เราจะเอาเครื่องหมายคำพูดคู่ \" \" หน้า-หลังที่ stringify สร้างเกินมาออกไป\nitems[0].json.safeOutput = safeAiOutput.slice(1, -1);\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        0
+      ],
+      "id": "804e110e-cf28-4482-90dc-50b5a164ea53",
+      "name": "Code1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b1751b54-54b2-45ba-8e70-639313935ca5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1267e40b6b623a9ba41a51e0c803d24bb13b5a284e0cd82f774a80bded5ac77f"
+  },
+  "id": "dH3lSLnMt6RnNFXh",
+  "tags": []
+}
