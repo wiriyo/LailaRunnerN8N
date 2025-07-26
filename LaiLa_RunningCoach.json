@@ -25,7 +25,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        2080,
+        2304,
         -160
       ],
       "id": "cb2f24da-82f7-4daa-a85b-4a86b6617396",
@@ -42,7 +42,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.1,
       "position": [
-        1680,
+        1904,
         -160
       ],
       "id": "97f1b049-1787-454c-b5e0-25b9aa6da40e",
@@ -56,7 +56,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        1712,
+        1936,
         64
       ],
       "id": "1e563f1c-d991-42e1-b97e-78797b0831cb",
@@ -89,7 +89,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2528,
+        2752,
         -160
       ],
       "id": "3c39a452-e966-429a-8598-e10ab891e684",
@@ -102,7 +102,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2304,
+        2528,
         -160
       ],
       "id": "804e110e-cf28-4482-90dc-50b5a164ea53",
@@ -171,11 +171,11 @@
         "operation": "analyze",
         "modelId": {
           "__rl": true,
-          "value": "models/gemini-1.5-flash-latest",
+          "value": "models/gemini-2.0-flash-lite",
           "mode": "list",
-          "cachedResultName": "models/gemini-1.5-flash-latest"
+          "cachedResultName": "models/gemini-2.0-flash-lite"
         },
-        "text": "อ่านข้อความทั้งหมดจากรูป หากรูปนั้นเป็นข้อมูลการกำลังกายให้ทำแปรข้อมูลเป็นภาษาอังกฤษ จากนั้นให้สกัดข้อมูลออกมาเป็น json และให้ตอบกลับเป็น   json เท่านั้น ห้ามมีคำอธิบายหรือข้อความอื่นนอกเหนือจาก JSON object แต่หากรูปนั้นไม่ใช่รูปข้อมูลการการออกกำลังกายให้เขียนบรรยายรูปและอ่านข้อความทั้งหมดบนรูป",
+        "text": "อ่านข้อความทั้งหมดจากรูป หากรูปนั้นเป็นข้อมูลการกำลังกายให้ทำแปรข้อมูลเป็นภาษาอังกฤษ จากนั้นให้สกัดข้อมูลออกมาเป็น json และให้ตอบกลับเป็น   json เท่านั้น ห้ามมีคำอธิบายหรือข้อความอื่นนอกเหนือจาก JSON object  แต่หากรูปนั้นไม่ใช่รูปข้อมูลการการออกกำลังกายให้เขียนบรรยายรูปและอ่านข้อความทั้งหมดบนรูป",
         "inputType": "binary",
         "options": {}
       },
@@ -204,7 +204,7 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        1840,
+        2064,
         64
       ],
       "id": "a620d51f-bb3a-4b89-bf50-4bd0f68c8ef4",
@@ -280,11 +280,305 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1456,
+        1680,
         -256
       ],
       "id": "8b14db60-832b-44bd-bf6c-5ffb5c7bc639",
       "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A",
+          "mode": "list",
+          "cachedResultName": "RunningRecord",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 864535905,
+          "mode": "list",
+          "cachedResultName": "data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit#gid=864535905"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $now.toFormat('dd-MM-') }}{{ $now.year + 543 }}",
+            "Duration": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('duration')).slice(14).match(/\\d{1,2}:\\d{1,2}'\\d{1,2}/)[0]}}",
+            "Distance_km": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('distance')).split(':')[1].match(/\\d{1,}.\\d{1,}/)[0] }}",
+            "Avg_Pace": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('avg_pace')).split(':')[1].match(/\\d{1,}.\\d{1,}/)[0] }}",
+            "Elevation_Gain_m": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('ascent')).split(':')[1].match(/\\d{1,3}/)[0]}}",
+            "Elevation_Loss_m": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('descent')).split(':')[1].match(/\\d{1,3}/)[0]}}",
+            "Calories": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('calorie')).split(':')[1].match(/\\d{1,9}/)[0]}}",
+            "Avg_HR": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('avg_heart')).split(':')[1].match(/\\d{1,}.\\d{1,}/)[0]}}",
+            "Max_HR": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('max_heart')).split(':')[1].match(/\\d{1,}.\\d{1,}/)[0]}}",
+            "VO2_Max": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('vo2_max')).split(':')[1].match(/\\d{1,}.\\d{1,}/)[0]}}",
+            "Avg_Speed_kph": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('avg_speed')).split(':')[1].match(/\\d{1,}.\\d{1,}/)[0]}}",
+            "Fastest_Pace": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('fastest_pace')).split(':')[1].match(/\\d{1,}.\\d{1,}/)[0] }}",
+            "Max_Speed_kph": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('max_speed')).split(':')[1].match(/\\d{1,}.\\d{1,}/)[0] }}",
+            "Steps": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('steps')).split(':')[1].match(/\\d{1,}.\\d{1,}/)[0] }}",
+            "Stride_Length_Avg": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('stride_length')).split(':')[1].match(/\\d{1,}/)[0] }}",
+            "Cadence_Avg": "={{ $json.content.parts[0].text.split('\\n').filter(line => line.toLowerCase().includes('cadence'))[1].match(/\\d{1,}/)[0]}}",
+            "Cadence_Max": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('max_cadence')).split(':')[1].match(/\\d{1,}/)[0] }}",
+            "TSS": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('tss')).split(':')[1].match(/\\d{1,}/)[0] }}",
+            "Recovery_Time": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('recovery_time')).split(':')[1].match(/\\d{1,}/)[0] }}",
+            "Time_Zone5": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('zone_5')).split(':')[1].match(/\\d{1,}/)[0] }}",
+            "Time_Zone4": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('zone_4')).split(':')[1].match(/\\d{1,}/)[0] }}",
+            "Time_Zone3": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('zone_3')).split(':')[1].match(/\\d{1,}/)[0] }}",
+            "Time_Zone2": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('zone_2')).split(':')[1].match(/\\d{1,}/)[0] }}",
+            "Time_Zone1": "={{ $json.content.parts[0].text.split('\\n').find(line => line.toLowerCase().includes('zone_1')).split(':')[1].match(/\\d{1,}/)[0] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Duration",
+              "displayName": "Duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Distance_km",
+              "displayName": "Distance_km",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Avg_Pace",
+              "displayName": "Avg_Pace",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fastest_Pace",
+              "displayName": "Fastest_Pace",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Elevation_Gain_m",
+              "displayName": "Elevation_Gain_m",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Elevation_Loss_m",
+              "displayName": "Elevation_Loss_m",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Calories",
+              "displayName": "Calories",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Avg_HR",
+              "displayName": "Avg_HR",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Max_HR",
+              "displayName": "Max_HR",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "VO2_Max",
+              "displayName": "VO2_Max",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Avg_Speed_kph",
+              "displayName": "Avg_Speed_kph",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Max_Speed_kph",
+              "displayName": "Max_Speed_kph",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Steps",
+              "displayName": "Steps",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stride_Length_Avg",
+              "displayName": "Stride_Length_Avg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Cadence_Avg",
+              "displayName": "Cadence_Avg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Cadence_Max",
+              "displayName": "Cadence_Max",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TSS",
+              "displayName": "TSS",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Recovery_Time",
+              "displayName": "Recovery_Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time_Zone5",
+              "displayName": "Time_Zone5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time_Zone4",
+              "displayName": "Time_Zone4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time_Zone3",
+              "displayName": "Time_Zone3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time_Zone2",
+              "displayName": "Time_Zone2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time_Zone1",
+              "displayName": "Time_Zone1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1472,
+        128
+      ],
+      "id": "891b27ff-5896-4e6a-bb1d-d9e1bf245db4",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OsZYWo0EHpNznyio",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -380,6 +674,11 @@
             "node": "Edit Fields",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -416,15 +715,20 @@
           }
         ]
       ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
     "timezone": "Asia/Bangkok",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "c03e2c48-d151-461c-8bed-58acd5f04d39",
+  "versionId": "cc931d62-cc74-45b3-9f96-d2c243f1671a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "1267e40b6b623a9ba41a51e0c803d24bb13b5a284e0cd82f774a80bded5ac77f"
