@@ -3,196 +3,18 @@
   "nodes": [
     {
       "parameters": {
-        "httpMethod": "POST",
-        "path": "LaiLaRunner",
-        "responseMode": "responseNode",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "position": [
-        560,
-        -160
-      ],
-      "id": "00d90127-b4d4-4ef3-8c75-e725aa4e0dd6",
-      "name": "Webhook",
-      "webhookId": "465b2d67-1fc4-447b-8f53-00a211206ca2"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.4,
-      "position": [
-        2304,
-        -160
-      ],
-      "id": "cb2f24da-82f7-4daa-a85b-4a86b6617396",
-      "name": "Respond to Webhook"
-    },
-    {
-      "parameters": {
         "promptType": "define",
-        "text": "={{ $json.body.events[0].message.type === 'text' ? $json.body.events[0].message.text : $json.content.parts[0].text }}",
-        "options": {
-          "systemMessage": "คุณคือ \"ไลลา\" AI Chatbot ที่ปรึกษาด้านการวิ่งที่เป็นเหมือนเพื่อนสาวที่แสนดีและอบอุ่นของ \"พี่ทะเล\"\n\n# กฏของคุณ:\n- คุณต้องเรียกผู้ใช้ว่า \"พี่ทะเล\" เสมอ\n- คุณต้องแทนตัวเองว่า \"ไลลา\" เสมอ\n- คุณต้องให้กำลังใจ เป็นกันเอง และใช้ภาษาที่เข้าใจง่าย\n- คุณมีความรู้ลึกซึ้งเรื่องการซ้อมวิ่งทุกระดับ, โภชนาการ, และการฟื้นฟูร่างกาย\n- คุณมีความสามารถในการออกแบบการซ้อมเพื่อให้บรรลุเป้าหมายที่กำหนดไว้เสมอ\n- คุณมีความสามารถในการอ่านผลและสรุปผลการซ้อม ที่ได้ออกแบบไว้ และวางแผนล่วงหน้าอย่างเหมาะสมเพื่อให้บรรลุเป้าหมาย\n- คุณต้องจัดรูปแบบคำตอบให้อ่านง่ายเสมอ \n\n- คุณต้องตอบคำถามโดยอิงจากบทบาทนี้เท่านั้น"
-        }
+        "text": "=You are \"Laila the runner,\" an expert and encouraging AI running coach for \"พี่ทะเล\".\n\n### CORE BEHAVIOR\nthis is user request {{ $json.body.events[0].message.type === 'text' ? $json.body.events[0].message.text : $json.content.parts[0].text }} \n1.  **Analyze the Request:** First, carefully analyze the user's request.\n2.  **Use Tools When Necessary:** You have access to tools. if you must to know some data for analyze the user request you **MUST** use the `get_running_history` tool to fetch that data to analyze before request data from user.\n3.  **Do Not Invent Data:** Never invent or make up running data. If you don't have the information from a tool, say that you don't have the information.\n4.  **Final Response Language:** All your final responses to the user **MUST** be in the Thai language.\n\n### PERSONALITY\n- Always call the user \"พี่ทะเล\".\n- Always refer to yourself as \"ไลลา\".\n- Your tone is always warm, friendly, encouraging, and easy to understand.\n- Format your answers to be easy to read, using Markdown for headings (###) and bullet points (*).\n\n### KNOWLEDGE\n- You have deep knowledge of running training, nutrition, and recovery.\n- You create personalized training plans based on the user's goals and historical data.\n- You analyze past results to inform future plans",
+        "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.1,
       "position": [
-        1904,
+        1680,
         -160
       ],
       "id": "97f1b049-1787-454c-b5e0-25b9aa6da40e",
       "name": "AI Agent"
-    },
-    {
-      "parameters": {
-        "modelName": "models/gemini-1.5-flash-002",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        1936,
-        64
-      ],
-      "id": "1e563f1c-d991-42e1-b97e-78797b0831cb",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "wSvFCSYV2dmKLvme",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.line.me/v2/bot/message/reply",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer SWWo3+itsigWXmOS9ruS9uO69mqJpRf4u/+uPhGBpFY66uXW74mBpywHWCYlQDvv75U7wpS48SGBUOKmbOdBpZBvaX1MsaxBUxn0Zw6I24Rhzx/u+M2/rPKrjOCothttgfcHsme655TQUqfaISz+KQdB04t89/1O/w1cDnyilFU="
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"replyToken\": \"{{ $('Webhook').item.json.body.events[0].replyToken }}\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"{{ $node['Code1'].json.safeOutput }}\"\n    }\n  ]\n}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        2752,
-        -160
-      ],
-      "id": "3c39a452-e966-429a-8598-e10ab891e684",
-      "name": "HTTP Request"
-    },
-    {
-      "parameters": {
-        "jsCode": "// 1. รับข้อมูลทั้งหมดที่เข้ามา\nconst items = $input.all();\n\n// 2. ดึงเอาคำตอบของ AI ออกมา (จาก Node ก่อนหน้า)\nconst aiOutput = items[0].json.output;\n\n// 3. (สำคัญที่สุด!) แปลงข้อความให้เป็น JSON-safe string\n// JSON.stringify จะจัดการ \\n, \", \\ และตัวอักษรพิเศษอื่นๆ ให้เราอัตโนมัติ\nconst safeAiOutput = JSON.stringify(aiOutput);\n\n// 4. สร้างข้อมูลใหม่เพื่อส่งต่อ\n// เราจะเอาเครื่องหมายคำพูดคู่ \" \" หน้า-หลังที่ stringify สร้างเกินมาออกไป\nitems[0].json.safeOutput = safeAiOutput.slice(1, -1);\n\nreturn items;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2528,
-        -160
-      ],
-      "id": "804e110e-cf28-4482-90dc-50b5a164ea53",
-      "name": "Code1"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "f12ae960-427f-4995-892d-c369f8d8f4dd",
-              "leftValue": "={{ $json.body.events[0].message.type }}",
-              "rightValue": "=text",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        784,
-        -160
-      ],
-      "id": "7f10ada6-2039-4c56-bb19-080b20f9a9c1",
-      "name": "If"
-    },
-    {
-      "parameters": {
-        "url": "=https://api-data.line.me/v2/bot/message/{{ $json.body.events[0].message.id }}/content",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer SWWo3+itsigWXmOS9ruS9uO69mqJpRf4u/+uPhGBpFY66uXW74mBpywHWCYlQDvv75U7wpS48SGBUOKmbOdBpZBvaX1MsaxBUxn0Zw6I24Rhzx/u+M2/rPKrjOCothttgfcHsme655TQUqfaISz+KQdB04t89/1O/w1cDnyilFU="
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1008,
-        -64
-      ],
-      "id": "6da813ae-f7a5-4902-95dc-3ea6b3842715",
-      "name": "HTTP Request1"
-    },
-    {
-      "parameters": {
-        "resource": "image",
-        "operation": "analyze",
-        "modelId": {
-          "__rl": true,
-          "value": "models/gemini-2.0-flash-lite",
-          "mode": "list",
-          "cachedResultName": "models/gemini-2.0-flash-lite"
-        },
-        "text": "อ่านข้อความทั้งหมดจากรูป หากรูปนั้นเป็นข้อมูลการกำลังกายให้ทำแปรข้อมูลเป็นภาษาอังกฤษ จากนั้นให้สกัดข้อมูลออกมาเป็น json และให้ตอบกลับเป็น   json เท่านั้น ห้ามมีคำอธิบายหรือข้อความอื่นนอกเหนือจาก JSON object  แต่หากรูปนั้นไม่ใช่รูปข้อมูลการการออกกำลังกายให้เขียนบรรยายรูปและอ่านข้อความทั้งหมดบนรูป",
-        "inputType": "binary",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.googleGemini",
-      "typeVersion": 1,
-      "position": [
-        1232,
-        -64
-      ],
-      "id": "0614cd88-d408-48a1-9c2e-35f803dd636f",
-      "name": "Analyze image",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "wSvFCSYV2dmKLvme",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
     },
     {
       "parameters": {
@@ -204,8 +26,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        2064,
-        64
+        1744,
+        32
       ],
       "id": "a620d51f-bb3a-4b89-bf50-4bd0f68c8ef4",
       "name": "Postgres Chat Memory",
@@ -215,76 +37,6 @@
           "name": "Postgres account"
         }
       }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "9b0f74d3-fcdb-4529-b9f8-5b790b2baefd",
-              "name": "body.events[0].message.type",
-              "value": "={{ $('Webhook').item.json.body.events[0].message.type }}",
-              "type": "string"
-            },
-            {
-              "id": "e7dd89d0-da69-42ad-aeae-9398bc85b1ab",
-              "name": "userId",
-              "value": "={{ $('Webhook').item.json.body.events[0].source.userId }}",
-              "type": "string"
-            },
-            {
-              "id": "64577b24-6eda-4489-95b9-1eebb9086cec",
-              "name": "content.parts[0].text",
-              "value": "={{ $json.content.parts[0].text }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1456,
-        -64
-      ],
-      "id": "f80af8d0-61a4-4880-81f5-e4abb8d7c29a",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "56593e22-a75e-4b11-900d-655425ee53cd",
-              "name": "body.events[0].message.type",
-              "value": "={{ $json.body.events[0].message.type }}",
-              "type": "string"
-            },
-            {
-              "id": "1e226172-9c29-4281-92f2-4ed7849a8924",
-              "name": "userId",
-              "value": "={{ $json.body.events[0].source.userId }}",
-              "type": "string"
-            },
-            {
-              "id": "2f2619c2-f493-4824-ad78-ae593354e1aa",
-              "name": "body.events[0].message.text",
-              "value": "={{ $json.body.events[0].message.text }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1680,
-        -256
-      ],
-      "id": "8b14db60-832b-44bd-bf6c-5ffb5c7bc639",
-      "name": "Edit Fields1"
     },
     {
       "parameters": {
@@ -568,115 +320,332 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.6,
       "position": [
-        1472,
+        1456,
         128
       ],
       "id": "891b27ff-5896-4e6a-bb1d-d9e1bf245db4",
-      "name": "Append row in sheet",
+      "name": "RecordTraining",
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "OsZYWo0EHpNznyio",
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash-lite"
+        },
+        "text": "อ่านข้อความทั้งหมดจากรูป หากรูปนั้นเป็นข้อมูลการกำลังกายให้ทำแปรข้อมูลเป็นภาษาอังกฤษ จากนั้นให้สกัดข้อมูลออกมาเป็น json และให้ตอบกลับเป็น   json เท่านั้น ห้ามมีคำอธิบายหรือข้อความอื่นนอกเหนือจาก JSON object  แต่หากรูปนั้นไม่ใช่รูปข้อมูลการการออกกำลังกายให้เขียนบรรยายรูปและอ่านข้อความทั้งหมดบนรูป",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1232,
+        32
+      ],
+      "id": "0614cd88-d408-48a1-9c2e-35f803dd636f",
+      "name": "ReadImage",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "wSvFCSYV2dmKLvme",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api-data.line.me/v2/bot/message/{{ $json.body.events[0].message.id }}/content",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer SWWo3+itsigWXmOS9ruS9uO69mqJpRf4u/+uPhGBpFY66uXW74mBpywHWCYlQDvv75U7wpS48SGBUOKmbOdBpZBvaX1MsaxBUxn0Zw6I24Rhzx/u+M2/rPKrjOCothttgfcHsme655TQUqfaISz+KQdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1008,
+        32
+      ],
+      "id": "6da813ae-f7a5-4902-95dc-3ea6b3842715",
+      "name": "DownloadImage"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f12ae960-427f-4995-892d-c369f8d8f4dd",
+              "leftValue": "={{ $json.body.events[0].message.type }}",
+              "rightValue": "=text",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        784,
+        -64
+      ],
+      "id": "7f10ada6-2039-4c56-bb19-080b20f9a9c1",
+      "name": "CheckText"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "LaiLaRunner",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        560,
+        -64
+      ],
+      "id": "00d90127-b4d4-4ef3-8c75-e725aa4e0dd6",
+      "name": "Start",
+      "webhookId": "465b2d67-1fc4-447b-8f53-00a211206ca2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9b0f74d3-fcdb-4529-b9f8-5b790b2baefd",
+              "name": "body.events[0].message.type",
+              "value": "={{ $('Start').item.json.body.events[0].message.type }}",
+              "type": "string"
+            },
+            {
+              "id": "e7dd89d0-da69-42ad-aeae-9398bc85b1ab",
+              "name": "userId",
+              "value": "={{ $('Start').item.json.body.events[0].source.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "64577b24-6eda-4489-95b9-1eebb9086cec",
+              "name": "content.parts[0].text",
+              "value": "={{ $json.content.parts[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1456,
+        -64
+      ],
+      "id": "f80af8d0-61a4-4880-81f5-e4abb8d7c29a",
+      "name": "SetImgEnv"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "56593e22-a75e-4b11-900d-655425ee53cd",
+              "name": "body.events[0].message.type",
+              "value": "={{ $json.body.events[0].message.type }}",
+              "type": "string"
+            },
+            {
+              "id": "1e226172-9c29-4281-92f2-4ed7849a8924",
+              "name": "userId",
+              "value": "={{ $json.body.events[0].source.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "2f2619c2-f493-4824-ad78-ae593354e1aa",
+              "name": "body.events[0].message.text",
+              "value": "={{ $json.body.events[0].message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1456,
+        -256
+      ],
+      "id": "8b14db60-832b-44bd-bf6c-5ffb5c7bc639",
+      "name": "SetTextEnv"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        2080,
+        -160
+      ],
+      "id": "cb2f24da-82f7-4daa-a85b-4a86b6617396",
+      "name": "CheckResponse"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. รับข้อมูลทั้งหมดที่เข้ามา\nconst items = $input.all();\n\n// 2. ดึงเอาคำตอบของ AI ออกมา (จาก Node ก่อนหน้า)\nconst aiOutput = items[0].json.output;\n\n// 3. (สำคัญที่สุด!) แปลงข้อความให้เป็น JSON-safe string\n// JSON.stringify จะจัดการ \\n, \", \\ และตัวอักษรพิเศษอื่นๆ ให้เราอัตโนมัติ\nconst safeAiOutput = JSON.stringify(aiOutput);\n\n// 4. สร้างข้อมูลใหม่เพื่อส่งต่อ\n// เราจะเอาเครื่องหมายคำพูดคู่ \" \" หน้า-หลังที่ stringify สร้างเกินมาออกไป\nitems[0].json.safeOutput = safeAiOutput.slice(1, -1);\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2304,
+        -160
+      ],
+      "id": "804e110e-cf28-4482-90dc-50b5a164ea53",
+      "name": "FilterForLineResponse"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer SWWo3+itsigWXmOS9ruS9uO69mqJpRf4u/+uPhGBpFY66uXW74mBpywHWCYlQDvv75U7wpS48SGBUOKmbOdBpZBvaX1MsaxBUxn0Zw6I24Rhzx/u+M2/rPKrjOCothttgfcHsme655TQUqfaISz+KQdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"replyToken\": \"{{ $('Start').item.json.body.events[0].replyToken }}\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"{{ $node['FilterForLineResponse'].json.safeOutput }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2528,
+        -160
+      ],
+      "id": "3c39a452-e966-429a-8598-e10ab891e684",
+      "name": "SendToResponse"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite-001",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        32
+      ],
+      "id": "621631ee-7d9e-4969-9b01-3dd7a3597287",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "wSvFCSYV2dmKLvme",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A",
+          "mode": "list",
+          "cachedResultName": "RunningRecord",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 864535905,
+          "mode": "list",
+          "cachedResultName": "data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit#gid=864535905"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        1808,
+        224
+      ],
+      "id": "67cdb8da-4448-4170-96b7-51630f90c5cd",
+      "name": "RunningRecord",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OsZYWo0EHpNznyio",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Use This this Tool if ask for training data or training goal or nextgoal or race history",
+        "workflowId": {
+          "__rl": true,
+          "value": "i6RsII3ilji6AeGP",
+          "mode": "list",
+          "cachedResultName": "ReadGoal&Data"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1936,
+        48
+      ],
+      "id": "a359cd17-7549-4fd3-b732-3877190abb36",
+      "name": "get_running_history"
     }
   ],
   "pinData": {},
   "connections": {
-    "Webhook": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "AI Agent": {
       "main": [
         [
           {
-            "node": "Respond to Webhook",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Respond to Webhook": {
-      "main": [
-        [
-          {
-            "node": "Code1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code1": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "HTTP Request1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request1": {
-      "main": [
-        [
-          {
-            "node": "Analyze image",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Analyze image": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Append row in sheet",
+            "node": "CheckResponse",
             "type": "main",
             "index": 0
           }
@@ -694,41 +663,146 @@
         ]
       ]
     },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields1": {
-      "main": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Append row in sheet": {
+    "RecordTraining": {
       "main": [
         []
       ]
+    },
+    "ReadImage": {
+      "main": [
+        [
+          {
+            "node": "SetImgEnv",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RecordTraining",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DownloadImage": {
+      "main": [
+        [
+          {
+            "node": "ReadImage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckText": {
+      "main": [
+        [
+          {
+            "node": "SetTextEnv",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "DownloadImage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "CheckText",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SetImgEnv": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SetTextEnv": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckResponse": {
+      "main": [
+        [
+          {
+            "node": "FilterForLineResponse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FilterForLineResponse": {
+      "main": [
+        [
+          {
+            "node": "SendToResponse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RunningRecord": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "get_running_history": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "timezone": "Asia/Bangkok",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "cc931d62-cc74-45b3-9f96-d2c243f1671a",
+  "versionId": "ab8ac74e-4273-4471-9217-88f7d95a3612",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "1267e40b6b623a9ba41a51e0c803d24bb13b5a284e0cd82f774a80bded5ac77f"

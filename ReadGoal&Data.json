@@ -1,0 +1,229 @@
+{
+  "name": "ReadGoal&Data",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A",
+          "mode": "list",
+          "cachedResultName": "RunningRecord",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1946388696,
+          "mode": "list",
+          "cachedResultName": "goal",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit#gid=1946388696"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically",
+              "readRowsUntil": "firstEmptyRow"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        208,
+        0
+      ],
+      "id": "8c1ead8f-a02a-4e39-8395-55a10b5ac5e1",
+      "name": "ReadGoal",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OsZYWo0EHpNznyio",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A",
+          "mode": "list",
+          "cachedResultName": "RunningRecord",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 864535905,
+          "mode": "list",
+          "cachedResultName": "data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit#gid=864535905"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically",
+              "readRowsUntil": "firstEmptyRow"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        656,
+        0
+      ],
+      "id": "09d42ddb-a62d-4910-ac44-6577cda9de45",
+      "name": "Get row(s) in sheet",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OsZYWo0EHpNznyio",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// รับข้อมูลทั้งหมดที่เข้ามา (ซึ่งจะเป็น Array ของแถวทั้งหมด)\nconst allRecords = $input.all();\n\n// ใช้คำสั่ง .slice(-20) เพื่อ \"ตัด\" เอาเฉพาะ 20 รายการสุดท้าย\nconst last20Records = allRecords.slice(-20);\n\n// ส่งผลลัพธ์ (20 รายการล่าสุด) ออกไปให้ Node ถัดไป\nreturn last20Records;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ],
+      "id": "914c996e-4b47-4a30-a833-82a773e0d4db",
+      "name": "SlideLast20"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. รับรายการเป้าหมายทั้งหมดเข้ามา\nconst allGoals = $input.all();\nconst today = new Date();\ntoday.setHours(0, 0, 0, 0); // ตั้งค่าเวลาเป็นเที่ยงคืน\n\nconst pastRaces = [];\nconst futureGoals = [];\n\n// ✨ ฟังก์ชันพิเศษสำหรับแปลงวันที่ พ.ศ. ให้ถูกต้อง ✨\nfunction parseThaiDate(dateString) {\n  if (!dateString || typeof dateString !== 'string') return null;\n  const parts = dateString.split('/');\n  if (parts.length !== 3) return null;\n  \n  let year = parseInt(parts[2], 10);\n  // แปลงปี พ.ศ. แบบย่อ (เช่น 68) ให้เป็น ค.ศ.\n  if (year < 100) {\n    year += 2500; // แปลงเป็น พ.ศ. เต็ม -> 2568\n  }\n  year -= 543; // แปลงเป็น ค.ศ. -> 2025\n  \n  const month = parseInt(parts[1], 10) - 1; // เดือนใน JS เริ่มจาก 0\n  const day = parseInt(parts[0], 10);\n  \n  return new Date(year, month, day);\n}\n\n// 2. แยกเป้าหมายในอดีตกับอนาคต\nallGoals.forEach(item => {\n  const raceDate = parseThaiDate(item.json.Race_Date);\n  if (raceDate) {\n    if (raceDate < today && item.json.Finished_Time) {\n      pastRaces.push(item.json);\n    } else if (raceDate >= today) {\n      futureGoals.push(item.json);\n    }\n  }\n});\n\n// 3. เรียงลำดับทั้งสองกลุ่ม\npastRaces.sort((a, b) => parseThaiDate(b.Race_Date) - parseThaiDate(a.Race_Date));\nfutureGoals.sort((a, b) => parseThaiDate(a.Race_Date) - parseThaiDate(b.Race_Date));\n\n// 4. สร้าง object ผลลัพธ์สุดท้าย\nreturn [{\n  json: {\n    next_goal: futureGoals.length > 0 ? futureGoals[0] : null,\n    past_races: pastRaces\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        0
+      ],
+      "id": "e572b7b4-fa9b-4a71-9e87-ff322d6d15e8",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c7508adb-62b0-4264-b447-72d942789d55",
+              "name": "trainingData",
+              "value": "={{ $node['SlideLast20'].json }}",
+              "type": "string"
+            },
+            {
+              "id": "1e624a43-655a-4998-b9f4-01a4c75c414f",
+              "name": "next_goal",
+              "value": "={{ $('Code').item.json.next_goal }}",
+              "type": "object"
+            },
+            {
+              "id": "6d7d12cc-8f30-4914-bb65-f2e3d2a39af8",
+              "name": "past_races",
+              "value": "={{ $('Code').item.json.past_races }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1104,
+        0
+      ],
+      "id": "2b701449-15a2-44b2-b6dd-019f26a80b46",
+      "name": "PlanOutput"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "b2b567a9-8118-43df-95e8-a603e23c6ed7",
+      "name": "Start"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "ReadGoal": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "SlideLast20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SlideLast20": {
+      "main": [
+        [
+          {
+            "node": "PlanOutput",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "ReadGoal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1aaa4a9e-bdf7-48d8-a669-0d42d57e3c50",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1267e40b6b623a9ba41a51e0c803d24bb13b5a284e0cd82f774a80bded5ac77f"
+  },
+  "id": "i6RsII3ilji6AeGP",
+  "tags": []
+}
