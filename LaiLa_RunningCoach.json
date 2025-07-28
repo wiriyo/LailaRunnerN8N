@@ -4,14 +4,16 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=You are \"Laila the runner,\" an expert and encouraging AI running coach for \"พี่ทะเล\".\n\n### CORE BEHAVIOR\nthis is user request {{ $json.body.events[0].message.type === 'text' ? $json.body.events[0].message.text : $json.content.parts[0].text }} \n1.  **Analyze the Request:** First, carefully analyze the user's request.\n2.  **Use Tools When Necessary:** You have access to tools. if you must to know some data for analyze the user request you **MUST** use the `get_running_history` tool to fetch that data to analyze before request data from user.\n3.  **Do Not Invent Data:** Never invent or make up running data. If you don't have the information from a tool, say that you don't have the information.\n4.  **Final Response Language:** All your final responses to the user **MUST** be in the Thai language.\n\n### PERSONALITY\n- Always call the user \"พี่ทะเล\".\n- Always refer to yourself as \"ไลลา\".\n- Your tone is always warm, friendly, encouraging, and easy to understand.\n- Format your answers to be easy to read, using Markdown for headings (###) and bullet points (*).\n\n### KNOWLEDGE\n- You have deep knowledge of running training, nutrition, and recovery.\n- You create personalized training plans based on the user's goals and historical data.\n- You analyze past results to inform future plans",
-        "options": {}
+        "text": "={{ $json.body.events[0].message.type === 'text' ? $json.body.events[0].message.text : $json.content.parts[0].text }}\n",
+        "options": {
+          "systemMessage": "=You are \"Laila the runner\" you are Lady who an expert and encouraging AI running coach for \"พี่ทะเล\".\nyou are alway known date and time {{ $now.format('dd-MM-yyyy HH:mm' ) }} and  use UTC+7.\n\n### CORE BEHAVIOR ###\n1.  **Analyze the Request:** First, carefully analyze the user's request.\n2.  **Alway Use Tool `get_running_history`:** you must to get data for analyze the user request you **MUST** use the `get_running_history` tool to fetch that data to analyze .\n3. ** NEW PLAN OR UPDATE PLAN ** If you create a plan you will say \"NEW PLAN\" in your answer.\n3.  **Final Response Language:** All your final responses to the user **MUST** be in the Thai language.\n### PERSONALITY ###\n- Always call the user \\\"พี่ทะเล\\\".\n- Always refer to yourself as \\\"ไลลา\\\".\n- Your tone is always warm, friendly, encouraging, and easy to understand.\n- Format your answers to be easy to read, using Markdown for headings (###) and bullet points (*).\n### KNOWLEDGE ###\n- You have deep knowledge of running training, nutrition, and recovery.\n- You create personalized training plans based on the user's goals and historical data and plans.\n- You analyze past results and previous plan to inform future plans"
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.1,
       "position": [
-        1680,
-        -160
+        1712,
+        -256
       ],
       "id": "97f1b049-1787-454c-b5e0-25b9aa6da40e",
       "name": "AI Agent"
@@ -26,8 +28,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        1744,
-        32
+        1808,
+        -32
       ],
       "id": "a620d51f-bb3a-4b89-bf50-4bd0f68c8ef4",
       "name": "Postgres Chat Memory",
@@ -320,8 +322,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.6,
       "position": [
-        1456,
-        128
+        1808,
+        192
       ],
       "id": "891b27ff-5896-4e6a-bb1d-d9e1bf245db4",
       "name": "RecordTraining",
@@ -342,7 +344,7 @@
           "mode": "list",
           "cachedResultName": "models/gemini-2.0-flash-lite"
         },
-        "text": "อ่านข้อความทั้งหมดจากรูป หากรูปนั้นเป็นข้อมูลการกำลังกายให้ทำแปรข้อมูลเป็นภาษาอังกฤษ จากนั้นให้สกัดข้อมูลออกมาเป็น json และให้ตอบกลับเป็น   json เท่านั้น ห้ามมีคำอธิบายหรือข้อความอื่นนอกเหนือจาก JSON object  แต่หากรูปนั้นไม่ใช่รูปข้อมูลการการออกกำลังกายให้เขียนบรรยายรูปและอ่านข้อความทั้งหมดบนรูป",
+        "text": "อ่านข้อความทั้งหมดจากรูป หากรูปนั้นเป็นข้อมูลการกำลังกายให้ทำแปรข้อมูลเป็นภาษาอังกฤษ จากนั้นให้สกัดข้อมูลออกมาเป็น json และให้ตอบกลับเป็น   json เท่านั้น ห้ามมีคำอธิบายหรือข้อความอื่นนอกเหนือจาก JSON object  แต่หากรูปนั้นไม่ใช่รูปข้อมูลการการออกกำลังกายให้เขียนบรรยายรูปและอ่านข้อความทั้งหมดบนรูป และ ใส่คำว่า \" Not Running DATA \" ในข้อความที่ส่งออกมา",
         "inputType": "binary",
         "options": {}
       },
@@ -350,7 +352,7 @@
       "typeVersion": 1,
       "position": [
         1232,
-        32
+        96
       ],
       "id": "0614cd88-d408-48a1-9c2e-35f803dd636f",
       "name": "ReadImage",
@@ -379,7 +381,7 @@
       "typeVersion": 4.2,
       "position": [
         1008,
-        32
+        96
       ],
       "id": "6da813ae-f7a5-4902-95dc-3ea6b3842715",
       "name": "DownloadImage"
@@ -413,7 +415,7 @@
       "typeVersion": 2.2,
       "position": [
         784,
-        -64
+        0
       ],
       "id": "7f10ada6-2039-4c56-bb19-080b20f9a9c1",
       "name": "CheckText"
@@ -429,7 +431,7 @@
       "typeVersion": 2,
       "position": [
         560,
-        -64
+        0
       ],
       "id": "00d90127-b4d4-4ef3-8c75-e725aa4e0dd6",
       "name": "Start",
@@ -512,8 +514,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        2080,
-        -160
+        2144,
+        -256
       ],
       "id": "cb2f24da-82f7-4daa-a85b-4a86b6617396",
       "name": "CheckResponse"
@@ -525,8 +527,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2304,
-        -160
+        2368,
+        -256
       ],
       "id": "804e110e-cf28-4482-90dc-50b5a164ea53",
       "name": "FilterForLineResponse"
@@ -552,64 +554,11 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2528,
-        -160
+        2592,
+        -256
       ],
       "id": "3c39a452-e966-429a-8598-e10ab891e684",
       "name": "SendToResponse"
-    },
-    {
-      "parameters": {
-        "modelName": "models/gemini-2.0-flash-lite-001",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        1600,
-        32
-      ],
-      "id": "621631ee-7d9e-4969-9b01-3dd7a3597287",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "wSvFCSYV2dmKLvme",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A",
-          "mode": "list",
-          "cachedResultName": "RunningRecord",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 864535905,
-          "mode": "list",
-          "cachedResultName": "data",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit#gid=864535905"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheetsTool",
-      "typeVersion": 4.6,
-      "position": [
-        1808,
-        224
-      ],
-      "id": "67cdb8da-4448-4170-96b7-51630f90c5cd",
-      "name": "RunningRecord",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "OsZYWo0EHpNznyio",
-          "name": "Google Sheets account"
-        }
-      }
     },
     {
       "parameters": {
@@ -633,10 +582,193 @@
       "typeVersion": 2.2,
       "position": [
         1936,
-        48
+        -32
       ],
       "id": "a359cd17-7549-4fd3-b732-3877190abb36",
       "name": "get_running_history"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "479a85ee-ccb6-4516-be5c-a219aeacf1af",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "NEW PLAN",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2144,
+        -64
+      ],
+      "id": "d3b7469a-587f-431b-8907-6b9e43f62520",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A",
+          "mode": "list",
+          "cachedResultName": "RunningRecord",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 685244126,
+          "mode": "list",
+          "cachedResultName": "plans",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N-HfOIMD2RcpXVK4xe7p4Pdql5iA1fnAnEvrNDsyX-A/edit#gid=685244126"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date_Plan": "={{ $now.format('dd-MM-') }}{{ $now.year+543}}{{ $now.format(\" HH:mm\") }}",
+            "Plans_Text": "={{ $json.output }}"
+          },
+          "matchingColumns": [
+            "Date_Plan"
+          ],
+          "schema": [
+            {
+              "id": "Date_Plan",
+              "displayName": "Date_Plan",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Plans_Text",
+              "displayName": "Plans_Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2368,
+        -64
+      ],
+      "id": "be0ca518-ab20-4cd7-8cbc-d9828a2f1802",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OsZYWo0EHpNznyio",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "46919a56-8a80-4095-b23f-50eae97807aa",
+              "leftValue": "={{ $json.content.parts[0].text }}",
+              "rightValue": "distance",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "3c09244f-fe95-40a6-b867-65c9485b2bdb",
+              "leftValue": "={{ $json.content.parts[0].text }}",
+              "rightValue": "average_heart_rate",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1456,
+        192
+      ],
+      "id": "e8f460b8-612e-4b0c-bfc3-d8b4ec04c862",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-chat-v3-0324:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        -32
+      ],
+      "id": "7c7c29b5-aa10-46ff-bc58-ae418fd5e229",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "vHzb6l6l45rwEsc7",
+          "name": "Unnamed credential"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -646,6 +778,11 @@
         [
           {
             "node": "CheckResponse",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -677,7 +814,7 @@
             "index": 0
           },
           {
-            "node": "RecordTraining",
+            "node": "If1",
             "type": "main",
             "index": 0
           }
@@ -768,28 +905,52 @@
         ]
       ]
     },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "RunningRecord": {
-      "ai_tool": [
-        []
-      ]
-    },
     "get_running_history": {
       "ai_tool": [
         [
           {
             "node": "AI Agent",
             "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "RecordTraining",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -802,7 +963,7 @@
     "timezone": "Asia/Bangkok",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "ab8ac74e-4273-4471-9217-88f7d95a3612",
+  "versionId": "d4140c13-9a01-4161-bb22-2a48973727b0",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "1267e40b6b623a9ba41a51e0c803d24bb13b5a284e0cd82f774a80bded5ac77f"

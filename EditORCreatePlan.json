@@ -1,5 +1,5 @@
 {
-  "name": "ReadGoal&Data",
+  "name": "EditORCreatePlan",
   "nodes": [
     {
       "parameters": {
@@ -32,7 +32,7 @@
         224,
         0
       ],
-      "id": "8c1ead8f-a02a-4e39-8395-55a10b5ac5e1",
+      "id": "331d397d-7cdc-47ef-a2ec-1efe1c7d5a99",
       "name": "ReadGoal",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -51,7 +51,7 @@
         896,
         0
       ],
-      "id": "914c996e-4b47-4a30-a833-82a773e0d4db",
+      "id": "b6112887-4fab-4c76-a3a9-f1dfa68935c4",
       "name": "SlideLast20"
     },
     {
@@ -64,7 +64,7 @@
         448,
         0
       ],
-      "id": "e572b7b4-fa9b-4a71-9e87-ff322d6d15e8",
+      "id": "25e70b61-9e4e-4862-b6bb-b470babeb88a",
       "name": "Code"
     },
     {
@@ -102,10 +102,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1424,
+        1552,
         0
       ],
-      "id": "2b701449-15a2-44b2-b6dd-019f26a80b46",
+      "id": "b130d486-07dc-4634-a983-7b4d31f04396",
       "name": "PlanOutput"
     },
     {
@@ -118,7 +118,7 @@
         -16,
         0
       ],
-      "id": "b2b567a9-8118-43df-95e8-a603e23c6ed7",
+      "id": "81d383ba-c7d0-4643-a30e-a779a31042dd",
       "name": "Start"
     },
     {
@@ -152,7 +152,7 @@
         672,
         0
       ],
-      "id": "09d42ddb-a62d-4910-ac44-6577cda9de45",
+      "id": "600b35a3-12cf-4df5-9ce8-3d069ee16762",
       "name": "TrainingData",
       "executeOnce": true,
       "credentials": {
@@ -193,7 +193,7 @@
         1152,
         0
       ],
-      "id": "a2d15728-5e8b-427f-9905-a40189048938",
+      "id": "3988f035-5edf-4dbf-aa58-87fd9a1ba3c4",
       "name": "PlanData",
       "alwaysOutputData": true,
       "executeOnce": true,
@@ -278,11 +278,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "d68298d1-8c8e-4126-9cdc-7ca16f02666a",
+  "versionId": "f7977056-2dd3-449c-8035-418178876ddb",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "1267e40b6b623a9ba41a51e0c803d24bb13b5a284e0cd82f774a80bded5ac77f"
   },
-  "id": "i6RsII3ilji6AeGP",
+  "id": "EhS7vACGGUqUOvBC",
   "tags": []
 }
