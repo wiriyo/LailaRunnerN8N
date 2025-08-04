@@ -1,0 +1,17 @@
+# .gitlab-ci.yml
+
+stages:
+  - build
+  - test
+
+build_job:
+  stage: build
+  script:
+    - echo "Building the project on the Raspberry Pi Runner..."
+    - ls -la
+
+test_job:
+  stage: test
+  script:
+    - echo "Running tests on the Raspberry Pi Runner..."
+    - echo "Test passed!"
